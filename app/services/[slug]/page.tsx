@@ -9,9 +9,9 @@ import SmartImage from "@/components/ui/SmartImage";
 import FaqAccordion, { JsonLd, faqPageSchema } from "@/components/faq/FaqAccordion";
 import ReviewsSection, { Stars } from "@/components/reviews/ReviewsSection";
 import Clients from "@/components/home/Clients";
-import { getClients, getReviews, getServiceDetail, getServiceSlugs, getServices } from "@/lib/data";
+import { getClients, getLocationBySlug, getReviews, getServiceDetail, getServiceSlugs, getServices, type ServiceDetail } from "@/lib/data";
 import { Markdown, stripMarkdown } from "@/lib/markdown";
-import { BUSINESS_ID, SITE, SITE_URL, absoluteUrl } from "@/lib/site";
+import { BUSINESS_ID, SITE, SITE_URL, absoluteUrl, truncate } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -24,6 +24,39 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
+type ResolvedService = { service: ServiceDetail; baseSlug: string };
+
+async function resolveService(slug: string): Promise<ResolvedService | null> {
+  const exactService = await getServiceDetail(slug);
+  if (exactService) return { service: exactService, baseSlug: exactService.slug };
+
+  const parts = slug.split("-in-");
+  if (parts.length !== 2 || !parts[0] || !parts[1]) return null;
+
+  const [baseService, location] = await Promise.all([
+    getServiceDetail(parts[0]),
+    getLocationBySlug(parts[1]),
+  ]);
+  if (!baseService || !location) return null;
+
+  const baseTitle = baseService.title.replace(/\s+in\s+.+$/i, "").trim() || baseService.title;
+  const title = `${baseTitle} in ${location.name}`;
+  return {
+    baseSlug: baseService.slug,
+    service: {
+      ...baseService,
+      slug,
+      title,
+      content: {
+        ...baseService.content,
+        h1: title,
+        metaTitle: truncate(`${title} | ${SITE.name}`, 60),
+        metaDescription: truncate(`${title}. ${baseService.shortDescription}`, 160),
+      },
+    },
+  };
+}
+
 function ogImageFor(image: string) {
   // Local service images have pre-cropped 1200×630 OG versions in /public/og.
   const local = image.match(/^\/services\/([a-z0-9-]+)\.(png|webp|jpe?g)$/i);
@@ -32,10 +65,11 @@ function ogImageFor(image: string) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const service = await getServiceDetail(slug);
-  if (!service) {
+  const resolved = await resolveService(slug);
+  if (!resolved) {
     return { title: "Service not found", robots: { index: false, follow: true } };
   }
+  const { service } = resolved;
   const { content } = service;
   const url = absoluteUrl(`/services/${service.slug}`);
   const image = ogImageFor(service.image);
@@ -64,8 +98,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
-  const service = await getServiceDetail(slug);
-  if (!service) notFound();
+  const parts = slug.split("-in-");
+  if (parts.length > 2 && parts[0] && parts[parts.length - 1]) {
+    permanentRedirect(`/services/${parts[0]}-in-${parts[parts.length - 1]}`);
+  }
+
+  const resolved = await resolveService(slug);
+  if (!resolved) notFound();
+  const { service, baseSlug } = resolved;
 
   // One URL per service: aliases, upper-case and trailing variations 301 to the canonical slug.
   if (slug !== service.slug) permanentRedirect(`/services/${service.slug}`);
@@ -78,7 +118,7 @@ export default async function ServicePage({ params }: Props) {
   ]);
 
   const url = absoluteUrl(`/services/${service.slug}`);
-  const otherServices = allServices.filter((s) => s.slug !== service.slug);
+  const otherServices = allServices.filter((s) => s.slug !== service.slug && s.slug !== baseSlug && !s.slug.includes("-in-"));
   const related = [
     ...content.related.map((r) => otherServices.find((s) => s.slug === r)).filter(Boolean),
     ...otherServices,

@@ -93,8 +93,9 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
     console.error(`Failed to load FAQs for location "${slug}":`, error);
   }
 
-  // Filter valid services
-  const validServices = services.filter((service) => Boolean(service.title?.trim() || service.name?.trim()));
+  // Only base service slugs should be combined with a location.
+  const baseServices = services.filter((service) => !service.slug.includes("-in-"));
+  const validServices = baseServices.filter((service) => Boolean(service.title?.trim() || service.name?.trim()));
   const featuredReviews = reviews.slice(0, 6);
 
   const localSchema = {
@@ -233,16 +234,19 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-6">Top Services we offer in {loc.name}</h3>
               <div className="grid sm:grid-cols-2 gap-4">
-                {validServices.slice(0, 6).map((service) => (
-                  <Link 
-                    key={service._id} 
-                    href={`/services/${service.slug}-in-${loc.slug}`}
-                    className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-green-50 hover:text-green-700 transition-colors border border-transparent hover:border-green-200 group"
-                  >
-                    <CheckCircle2 className="text-green-500 group-hover:scale-110 transition-transform" size={20} />
-                    <span className="font-semibold text-gray-700 group-hover:text-green-700">{service.title || service.name}</span>
-                  </Link>
-                ))}
+                {validServices.slice(0, 6).map((service) => {
+                  const baseSlug = service.slug.split("-in-")[0];
+                  return (
+                    <Link
+                      key={service._id}
+                      href={`/services/${baseSlug}-in-${loc.slug}`}
+                      className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-green-50 hover:text-green-700 transition-colors border border-transparent hover:border-green-200 group"
+                    >
+                      <CheckCircle2 className="text-green-500 group-hover:scale-110 transition-transform" size={20} />
+                      <span className="font-semibold text-gray-700 group-hover:text-green-700">{service.title || service.name}</span>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>

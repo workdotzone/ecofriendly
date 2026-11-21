@@ -92,9 +92,17 @@ async function seoGuards(request: NextRequest) {
     // Files in /public/services (e.g. termite.webp) are static assets, never pages.
     if (!raw || raw.includes("/") || raw.includes(".")) return null;
     const lower = decode(raw).toLowerCase();
+    const parts = lower.split("-in-");
+    if (parts.length > 2) {
+      const baseSlug = SERVICE_ALIASES[parts[0]] ?? parts[0];
+      const locationSlug = parts[parts.length - 1];
+      return baseSlug && locationSlug
+        ? redirectTo(request, `/services/${baseSlug}-in-${locationSlug}`)
+        : notFoundRewrite(request);
+    }
     const target = SERVICE_ALIASES[lower] ?? lower;
     if (target !== decode(raw)) return redirectTo(request, `/services/${target}`);
-    if (CORE_SERVICE_SLUGS.has(target)) return null;
+    if (CORE_SERVICE_SLUGS.has(target) || target.includes("-in-")) return null;
     const live = await liveServiceSlugs(request);
     return live && live.size > 0 && !live.has(target) ? notFoundRewrite(request) : null;
   }

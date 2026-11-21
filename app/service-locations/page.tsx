@@ -13,7 +13,8 @@ export default async function ServiceLocationsPage() {
   const testimonials = reviewData.reviews.map((r) => ({ _id: r.id, name: r.name, designation: r.designation, service: r.service, rating: r.rating, text: r.text }));
   const clients = clientList.map((c) => ({ _id: c.id, name: c.name, image: c.image }));
 
-  const validServices = services.filter((service) =>
+  const baseServices = services.filter((service) => !service.slug.includes("-in-"));
+  const validServices = baseServices.filter((service) =>
     Boolean(service.slug && (service.title?.trim() || service.name?.trim())),
   );
   const schemaData = {
@@ -99,17 +100,20 @@ export default async function ServiceLocationsPage() {
                   Popular services in {location.name}
                 </p>
                 <ul className="mb-7 flex-grow space-y-3">
-                  {validServices.slice(0, 4).map((service) => (
-                    <li key={service._id.toString()}>
+                  {validServices.slice(0, 4).map((service) => {
+                    const baseSlug = service.slug.split("-in-")[0];
+                    return (
+                      <li key={service._id.toString()}>
                       <Link
-                        href={`/services/${service.slug}-in-${location.slug}`}
+                        href={`/services/${baseSlug}-in-${location.slug}`}
                         className="flex items-start gap-2 text-sm font-medium text-gray-600 transition hover:text-green-700"
                       >
                         <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-green-600" />
                         {service.title || service.name}
                       </Link>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
 
                 <Link
