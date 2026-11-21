@@ -16,6 +16,23 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Admin account setup
+
+Before creating the first admin, set these server-only variables in `.env`:
+
+- `JWT_SECRET`: a random secret with at least 32 characters. Keep it private; changing it invalidates existing sessions.
+- `ADMIN_SETUP_KEY`: a separate random secret with at least 32 characters. It is required only for the one-time initial registration.
+
+Generate each value separately with:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Restart the app, open `/admin/login`, and create the first admin using the setup key, email, and a password of at least 12 characters. Registration closes as soon as the account is created. Complete this setup from a trusted device before making the site publicly accessible. After registration, the setup key can be removed; keep `JWT_SECRET` configured for login sessions.
+
+Admin sessions use an HTTP-only cookie and expire after 12 hours. Admin APIs require a valid session, and repeated failed login attempts are temporarily rate-limited.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
