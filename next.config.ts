@@ -11,6 +11,7 @@ const imageKitHost = (() => {
 const nextConfig: NextConfig = {
   experimental: {
     agentFeedback: true,
+    cpus: 1,
   },
   cacheComponents: true,
   partialPrefetching: true,
