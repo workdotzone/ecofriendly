@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: {
@@ -6,14 +7,14 @@ export const metadata: Metadata = {
   },
   description: "Find professional eco-friendly pest control near you across Mumbai, Thane and Navi Mumbai.",
   alternates: {
-    canonical: "https://ecofriendlypests.com/service-locations",
+    canonical: absoluteUrl("/service-locations"),
   },
   openGraph: {
     type: "website",
     locale: "en_IN",
     title: "Pest Control Service Locations",
     description: "Explore Eco-Friendly Pests service areas across Mumbai and nearby regions.",
-    url: "https://ecofriendlypests.com/service-locations",
+    url: absoluteUrl("/service-locations"),
     siteName: "Eco-Friendly Pests",
   },
 };

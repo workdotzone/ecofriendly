@@ -6,11 +6,12 @@ import {
   Building2, Coffee, Hospital, School, Home, 
   ShieldCheck, ArrowRight, Quote, Star, CheckCircle2 
 } from "lucide-react";
+import { absoluteUrl } from "@/lib/site";
 
 // 🚀 SEO METADATA FOR CLIENTS PAGE
 export const metadata: Metadata = {
   title: "Our Clients — Commercial Pest Control in Mumbai",
-  alternates: { canonical: "https://ecofriendlypests.com/clients" },
+  alternates: { canonical: absoluteUrl("/clients") },
   description: "Eco-Friendly Pests is the trusted choice for 1000+ commercial and residential clients in Mumbai, Thane, and Pune. See our esteemed client portfolio.",
   keywords: ["Pest control clients Mumbai", "Commercial pest control portfolio", "Top pest control companies Mumbai", "Hospitality pest control", "Corporate pest management"],
   openGraph: {

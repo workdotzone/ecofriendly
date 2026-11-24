@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MapPin, ShieldCheck, PhoneCall, CheckCircle2, ArrowRight, Star, Quote, Building2, BadgeCheck } from 'lucide-react';
 import { getFaqsForLocation } from '@/lib/faqs';
 import { getClients, getLocationBySlug, getLocationSlugs, getReviews, getServices } from '@/lib/data';
+import { absoluteUrl } from '@/lib/site';
 
 
 type ServiceSummary = {
@@ -65,7 +66,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const description = isWorli
     ? 'Looking for pest control in Worli? Get safe, odorless, eco-friendly termite, rodent, cockroach and mosquito treatments with free inspection.'
     : loc.metaDescription || loc.shortDescription || `Eco-friendly pest control in ${loc.name}, Mumbai. Free inspection and written quote.`;
-  const canonicalUrl = `https://ecofriendlypests.com/service-locations/${loc.slug}`;
+  const canonicalUrl = absoluteUrl(`/service-locations/${loc.slug}`);
   return {
     title: { absolute: title },
     description,
@@ -80,6 +81,7 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
   const loc = await loadLocation(slug);
   if (!loc) notFound();
   const isWorli = loc.slug.toLowerCase() === 'worli';
+  const canonicalUrl = absoluteUrl(`/service-locations/${loc.slug}`);
 
   const [publicServices, reviewData, clients] = await Promise.all([getServices(), getReviews({ limit: 6 }), getClients()]);
   const services: ServiceSummary[] = publicServices.map((s) => ({ _id: s.id, title: s.title, slug: s.slug }));
@@ -103,17 +105,17 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
     "@graph": [
       {
         "@type": "WebPage",
-        "@id": `https://ecofriendlypests.com/service-locations/${loc.slug}#webpage`,
+        "@id": `${canonicalUrl}#webpage`,
         "name": isWorli ? "Pest Control in Worli" : (loc.metaTitle || `Pest Control in ${loc.name}`),
         "description": isWorli
           ? "Looking for pest control in Worli? Get safe, odorless, eco-friendly pest treatments with free inspection."
           : (loc.metaDescription || loc.shortDescription),
-        "url": `https://ecofriendlypests.com/service-locations/${loc.slug}`,
+        "url": canonicalUrl,
         "inLanguage": "en-IN",
       },
       {
         "@type": "Service",
-        "@id": `https://ecofriendlypests.com/service-locations/${loc.slug}#service`,
+        "@id": `${canonicalUrl}#service`,
         "name": `Pest Control in ${loc.name}`,
         "serviceType": "Pest control",
         "description": loc.metaDescription || loc.shortDescription,
@@ -124,15 +126,15 @@ export default async function LocationDetailPage({ params }: { params: Promise<{
         "provider": {
           "@type": "Organization",
           "name": "Eco-Friendly Pests",
-          "url": "https://ecofriendlypests.com",
+          "url": absoluteUrl("/"),
         },
       },
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ecofriendlypests.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://ecofriendlypests.com/service-locations" },
-          { "@type": "ListItem", "position": 3, "name": loc.name, "item": `https://ecofriendlypests.com/service-locations/${loc.slug}` },
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": absoluteUrl("/") },
+          { "@type": "ListItem", "position": 2, "name": "Locations", "item": absoluteUrl("/service-locations") },
+          { "@type": "ListItem", "position": 3, "name": loc.name, "item": canonicalUrl },
         ],
       },
       {

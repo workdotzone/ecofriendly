@@ -3,8 +3,7 @@ import PageFaqSection from "@/components/faq/PageFaqSection";
 import { ArrowRight, BadgeCheck, Building2, CheckCircle2, MapPin, PhoneCall, ShieldCheck, Star } from "lucide-react";
 import SmartImage from "@/components/ui/SmartImage";
 import { getClients, getLocations, getReviews, getServices } from "@/lib/data";
-
-const siteUrl = "https://ecofriendlypests.com";
+import { SITE_URL } from "@/lib/site";
 
 export default async function ServiceLocationsPage() {
   const [locationList, serviceList, reviewData, clientList] = await Promise.all([getLocations(), getServices(), getReviews({ limit: 6 }), getClients()]);
@@ -20,12 +19,12 @@ export default async function ServiceLocationsPage() {
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${siteUrl}/service-locations#webpage`,
+    "@id": `${SITE_URL}/service-locations#webpage`,
     "name": "Pest Control Service Locations in Mumbai and Maharashtra",
     "description": "Find eco-friendly pest control services in Mumbai, Thane, Navi Mumbai and nearby Maharashtra locations.",
-    "url": `${siteUrl}/service-locations`,
+    "url": `${SITE_URL}/service-locations`,
     "inLanguage": "en-IN",
-    "publisher": { "@id": `${siteUrl}/#organization` },
+    "publisher": { "@id": `${SITE_URL}/#organization` },
     "mainEntity": {
       "@type": "ItemList",
       "name": "Pest control locations served",
@@ -34,7 +33,7 @@ export default async function ServiceLocationsPage() {
         "@type": "ListItem",
         "position": index + 1,
         "name": `Pest Control in ${location.name}`,
-        "url": `${siteUrl}/service-locations/${location.slug}`,
+        "url": `${SITE_URL}/service-locations/${location.slug}`,
       })),
     },
   };
