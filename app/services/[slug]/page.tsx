@@ -20,8 +20,10 @@ type Props = { params: Promise<{ slug: string }> };
 export const instant = false;
 
 export async function generateStaticParams() {
-  const slugs = await getServiceSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const slugs = (await getServiceSlugs())
+    .filter((slug) => !slug.includes("-in-"))
+    .slice(0, 10);
+  return (slugs.length ? slugs : ["cockroach-control"]).map((slug) => ({ slug }));
 }
 
 type ResolvedService = { service: ServiceDetail; baseSlug: string };

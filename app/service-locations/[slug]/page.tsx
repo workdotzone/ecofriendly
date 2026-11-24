@@ -37,7 +37,7 @@ type ClientLogo = {
 export const instant = false;
 
 export async function generateStaticParams() {
-  const slugs = await getLocationSlugs();
+  const slugs = (await getLocationSlugs()).slice(0, 5);
   // Cache Components requires at least one param; unknown slugs still render on demand.
   return (slugs.length ? slugs : ['mumbai']).map((slug) => ({ slug }));
 }

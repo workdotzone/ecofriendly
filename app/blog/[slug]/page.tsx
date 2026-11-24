@@ -17,7 +17,9 @@ export const instant = false;
 export async function generateStaticParams() {
   const blogs = await getBlogs();
   // Cache Components needs at least one param; unknown slugs still render on demand.
-  return (blogs.length ? blogs : [{ slug: "pest-control-tips" }]).map((b) => ({ slug: b.slug }));
+  return (blogs.length ? blogs : [{ slug: "pest-control-tips" }])
+    .slice(0, 5)
+    .map((b) => ({ slug: b.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
