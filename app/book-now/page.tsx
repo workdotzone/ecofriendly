@@ -4,17 +4,18 @@ import Link from "next/link";
 import { ShieldCheck, PhoneCall, CheckCircle2 } from "lucide-react";
 import BookNowForm from "@/components/forms/BookNowForm";
 import { getServices } from "@/lib/data";
+import { absoluteUrl } from "@/lib/site";
 
 // 🚀 SEO METADATA (Perfectly Intact)
 export const metadata: Metadata = {
   title: "Book a Free Pest Control Inspection & Quote",
-  alternates: { canonical: "https://ecofriendlypests.com/book-now" },
+  alternates: { canonical: absoluteUrl("/book-now") },
   description: "Schedule a free pest inspection for your home or commercial property in Mumbai, Thane, Navi Mumbai, & Pune. 100% safe & odorless treatment.",
   keywords: ["Book pest control Mumbai", "Free pest inspection", "Pest control appointment", "Eco-friendly pest booking"],
   openGraph: {
     title: "Book Free Pest Inspection | Eco-Friendly Pests",
     description: "Schedule your inspection with our expert technicians today.",
-    url: "https://ecofriendlypests.com/book-now",
+    url: absoluteUrl("/book-now"),
     images: [{ url: "/og/default.jpg", width: 1200, height: 630, alt: "Book a free pest inspection" }],
   }
 };

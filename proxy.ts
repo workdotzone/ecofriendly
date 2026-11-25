@@ -4,7 +4,6 @@ import { isAdminRequest, isSameOriginRequest } from "@/lib/adminSession";
 import legacyPages from "@/app/legacy-pages.json";
 import { SERVICE_ALIASES } from "@/lib/content/aliases";
 import { SERVICE_CONTENT } from "@/lib/content/services";
-import { SITE_URL } from "@/lib/site";
 
 const publicAdminApiPaths = new Set([
   "/api/admin/login",
@@ -105,16 +104,6 @@ function redirectTo(request: NextRequest, pathname: string) {
   return NextResponse.redirect(url, 308);
 }
 
-function canonicalOriginRedirect(request: NextRequest) {
-  if (process.env.NODE_ENV !== "production") return null;
-
-  const canonical = new URL(SITE_URL);
-  if (request.nextUrl.origin === canonical.origin) return null;
-
-  const url = new URL(`${request.nextUrl.pathname}${request.nextUrl.search}`, canonical);
-  return NextResponse.redirect(url, 308);
-}
-
 /**
 - SEO guards that must run before streaming starts (streamed pages always begin with HTTP 200):
 -  - unknown top-level URLs → real 404 status (not a "soft 404")
@@ -178,9 +167,6 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAdminApi = pathname.startsWith("/api/admin/");
   const isAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
-
-  const originRedirect = canonicalOriginRedirect(request);
-  if (originRedirect) return originRedirect;
 
   if (!isAdminApi && !isAdminPage) {
     const dynamicRedirect = await dynamicRedirectLookup(request);

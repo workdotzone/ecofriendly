@@ -22,10 +22,10 @@ Also fixed: images in `/public/services/` were being blocked by the SEO guard in
 ## After you deploy (do these once)
 1. **Admin → Services → "Import default content"** — copies the 6 core services (full content + 12 FAQs each)
    into MongoDB so you can edit them. Existing services are kept; only their *empty* SEO fields are filled.
-2. **Google Search Console & Bing Webmaster Tools** → submit `https://ecofriendlypests.com/sitemap.xml` (one file with every page).
+2. **Google Search Console & Bing Webmaster Tools** → submit `https://pest-control-mumbai.vercel.app/sitemap.xml` (one file with every page).
 3. In `lib/site.ts`: set the exact map pin (`geo`) from your Google Business Profile and add your real
    profile URLs to `sameAs` (Google Business Profile, Facebook, Instagram, Justdial…). Social icons appear in the footer automatically.
-4. Optional env: `NEXT_PUBLIC_SITE_URL` (defaults to https://ecofriendlypests.com), `MONGODB_TIMEOUT_MS` (default 8000).
+4. Optional env: `NEXT_PUBLIC_SITE_URL` (defaults to https://pest-control-mumbai.vercel.app), `MONGODB_TIMEOUT_MS` (default 8000).
 5. Review the starter text in `/privacy-policy` and `/terms-and-conditions`.
 
 ## How content flows now

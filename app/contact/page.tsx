@@ -2,17 +2,18 @@ import type { Metadata } from "next";
 import PageFaqSection from "@/components/faq/PageFaqSection";
 import Link from "next/link";
 import { MapPin, PhoneCall, Mail, Clock, Send, ShieldCheck } from "lucide-react";
+import { absoluteUrl } from "@/lib/site";
 
 // 🚀 SEO METADATA FOR CONTACT PAGE
 export const metadata: Metadata = {
   title: "Contact Us — Pest Control in Mumbai",
-  alternates: { canonical: "https://ecofriendlypests.com/contact" },
+  alternates: { canonical: absoluteUrl("/contact") },
   description: "Get in touch with Eco-Friendly Pests Control. Call +91-94533 94533 for 100% safe, odorless, and guaranteed pest control services in Mumbai.",
   keywords: ["Contact pest control Mumbai", "Pest control Dahisar", "Pest control phone number", "Book pest control online", "Eco-friendly pests contact"],
   openGraph: {
     title: "Contact Eco-Friendly Pests Control in Mumbai",
     description: "Our pest professionals are always ready to answer your queries. Get a free inspection today.",
-    url: "https://ecofriendlypests.com/contact",
+    url: absoluteUrl("/contact"),
     images: [{ url: "/og/default.jpg", width: 1200, height: 630, alt: "Contact Eco-Friendly Pests" }],
   }
 };
@@ -23,9 +24,9 @@ export default function ContactPage() {
     "@context": "https://schema.org",
     "@type": "PestControlService",
     "name": "Eco-Friendly Pests",
-    "image": "https://ecofriendlypests.com/logo.png",
-    "@id": "",
-    "url": "https://ecofriendlypests.com",
+    "image": absoluteUrl("/logo.png"),
+    "@id": absoluteUrl("/#localbusiness"),
+    "url": absoluteUrl("/"),
     "telephone": "+919453394533",
     "address": {
       "@type": "PostalAddress",

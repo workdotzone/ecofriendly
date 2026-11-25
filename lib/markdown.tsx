@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
+import { SITE_URL } from "@/lib/site";
 
 /**
  * Tiny, safe markdown-lite renderer for admin/curated content (no dangerouslySetInnerHTML, no XSS).
@@ -6,6 +8,21 @@ import type { ReactNode } from "react";
  * and [text](/internal-or-https-link). Plain text with single newlines still renders as readable paragraphs,
  * so content already saved in the admin panel keeps working.
  */
+
+function rewriteInternalHref(href: string) {
+  try {
+    const url = new URL(href, SITE_URL);
+    const hostname = url.hostname.toLowerCase();
+    const isLegacyHost = hostname === "ecofriendlypests.com" || hostname === "www.ecofriendlypests.com";
+    if (url.origin !== new URL(SITE_URL).origin && !isLegacyHost) return href;
+    const pathname = /^\/index\.php$/i.test(url.pathname)
+      ? "/"
+      : url.pathname.replace(/\.php$/i, "");
+    return `${pathname}${url.search}${url.hash}`;
+  } catch {
+    return href;
+  }
+}
 
 function inline(text: string, keyPrefix: string): ReactNode[] {
   const nodes: ReactNode[] = [];
@@ -20,14 +37,23 @@ function inline(text: string, keyPrefix: string): ReactNode[] {
       nodes.push(<strong key={`${keyPrefix}-b${i}`} className="font-semibold text-gray-900">{token.slice(2, -2)}</strong>);
     } else {
       const [, label, href] = token.match(/^\[([^\]]+)\]\(([^)\s]+)\)$/) ?? [];
-      const safe = href && (/^\/(?!\/)/.test(href) || /^https?:\/\//i.test(href) || /^(tel|mailto):/i.test(href));
+      const target = href ? rewriteInternalHref(href) : "";
+      const safe = target && (/^\/(?!\/)/.test(target) || /^https?:\/\//i.test(target) || /^(tel|mailto):/i.test(target));
       nodes.push(
-        safe ? (
+        safe && target.startsWith("/") ? (
+          <Link
+            key={`${keyPrefix}-a${i}`}
+            href={target}
+            className="font-semibold text-green-700 underline decoration-green-300 underline-offset-2 hover:text-green-800"
+          >
+            {label}
+          </Link>
+        ) : safe ? (
           <a
             key={`${keyPrefix}-a${i}`}
-            href={href}
+            href={target}
             className="font-semibold text-green-700 underline decoration-green-300 underline-offset-2 hover:text-green-800"
-            {...(/^https?:\/\//i.test(href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            {...(/^https?:\/\//i.test(target) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
           >
             {label}
           </a>

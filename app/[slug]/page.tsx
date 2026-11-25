@@ -28,10 +28,11 @@ export function generateStaticParams() {
     "about", "about-us", "admin", "blog", "book-now", "booknow", "clients", "contact",
     "privacy-policy", "services", "service-locations", "terms-and-conditions", "testimonials",
   ]);
-  return (pageSlugs as string[])
+  const slugs = (pageSlugs as string[])
     .map(decode)
     .filter((slug) => !reserved.has(slug.toLowerCase()))
-    .map((slug) => ({ slug }));
+    .slice(0, 5);
+  return (slugs.length ? slugs : ["bed-bugs-pest-control"]).map((slug) => ({ slug }));
 }
 
 type Props = { params: Promise<{ slug: string }> };

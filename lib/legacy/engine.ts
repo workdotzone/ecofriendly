@@ -799,17 +799,17 @@ function dedupe(faqs: FaqItem[]) {
   });
 }
 
-const CACHE = new Map<string, LegacyModel | null>();
+const SOURCE_BY_SLUG = new Map<string, string>();
+for (const source of legacySlugs as string[]) {
+  const key = decode(source).toLowerCase();
+  if (!SOURCE_BY_SLUG.has(key)) SOURCE_BY_SLUG.set(key, source);
+}
 
 /** Build the page model for a published legacy slug. Returns null if it isn't in the sitemap. */
 export function buildLegacyModel(sourcePathOrDecoded: string): LegacyModel | null {
   const key = decode(sourcePathOrDecoded).toLowerCase();
-  if (CACHE.has(key)) return CACHE.get(key)!;
-  const source = (legacySlugs as string[]).find((s) => decode(s).toLowerCase() === key);
-  if (!source) {
-    CACHE.set(key, null);
-    return null;
-  }
+  const source = SOURCE_BY_SLUG.get(key);
+  if (!source) return null;
   const c = classify(source);
   let model: LegacyModel;
   switch (c.kind) {
@@ -821,6 +821,5 @@ export function buildLegacyModel(sourcePathOrDecoded: string): LegacyModel | nul
   }
   // Every page carries exactly 12 FAQs (padded with general FAQs if a source list was short).
   model.faqs = dedupe([...model.faqs, ...GENERAL_FAQS]).slice(0, 12);
-  CACHE.set(key, model);
   return model;
 }
