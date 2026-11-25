@@ -56,6 +56,43 @@ async function liveServiceSlugs(request: NextRequest): Promise<Set<string> | nul
   }
 }
 
+async function dynamicRedirectLookup(request: NextRequest) {
+  if (request.headers.get("next-router-prefetch") || request.headers.get("purpose") === "prefetch") {
+    return null;
+  }
+
+  const { pathname } = request.nextUrl;
+
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/admin") ||
+    (pathname.includes(".") && !pathname.endsWith(".php") && !pathname.endsWith(".html"))
+  ) {
+    return null;
+  }
+
+  const cleanPath = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+
+  try {
+    const lookupUrl = new URL(`/api/redirects/lookup?path=${encodeURIComponent(cleanPath)}`, request.url);
+    const res = await fetch(lookupUrl, { cache: "no-store", signal: AbortSignal.timeout(1500) });
+    if (!res.ok) return null;
+
+    const rule = await res.json();
+    if (rule?.destination) {
+      const target = /^https?:\/\//i.test(rule.destination)
+        ? rule.destination
+        : new URL(rule.destination, request.url);
+      return NextResponse.redirect(target, rule.permanent ? 301 : 302);
+    }
+  } catch {
+    // Fail open so site never breaks if DB lookup is slow
+  }
+
+  return null;
+}
+
 function notFoundRewrite(request: NextRequest) {
   const url = request.nextUrl.clone();
   url.pathname = "/__not-found/page";
@@ -79,10 +116,10 @@ function canonicalOriginRedirect(request: NextRequest) {
 }
 
 /**
- * SEO guards that must run before streaming starts (streamed pages always begin with HTTP 200):
- *  - unknown top-level URLs → real 404 status (not a "soft 404")
- *  - /services/Upper-Case and alias slugs (/services/rat-control) → one 308 to the canonical URL
- *  - old PHP URLs → one permanent redirect to their clean Next.js URL
+- SEO guards that must run before streaming starts (streamed pages always begin with HTTP 200):
+-  - unknown top-level URLs → real 404 status (not a "soft 404")
+-  - /services/Upper-Case and alias slugs (/services/rat-control) → one 308 to the canonical URL
+-  - old PHP URLs → one permanent redirect to their clean Next.js URL
  */
 async function seoGuards(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -146,6 +183,9 @@ export async function proxy(request: NextRequest) {
   if (originRedirect) return originRedirect;
 
   if (!isAdminApi && !isAdminPage) {
+    const dynamicRedirect = await dynamicRedirectLookup(request);
+    if (dynamicRedirect) return dynamicRedirect;
+
     return (await seoGuards(request)) ?? NextResponse.next();
   }
 
