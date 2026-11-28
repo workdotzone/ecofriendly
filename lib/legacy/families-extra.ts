@@ -14,15 +14,15 @@ export const EXTRA_FAMILIES: ServiceContent[] = [
     title: "Pest Control",
     h1: "Pest Control Services",
     metaTitle: "Pest Control Services | Eco-Friendly Pests",
-    metaDescription: "General pest control for homes and businesses: cockroaches, ants, spiders, silverfish and more, with odourless treatments and a free inspection.",
-    shortDescription: "One visit that covers the common crawling pests in a home or office — cockroaches, ants, spiders, silverfish and lizards — using targeted, low-odour treatments.",
-    quickAnswer: "General pest control treats the common crawling insects found in Indian homes — cockroaches, ants, spiders, silverfish and similar pests — in one visit. A technician inspects the property, applies gel baits and targeted crack-and-crevice sprays where pests hide, and advises on sealing entry points. Most homes repeat it every three months.",
+    metaDescription: "General pest control for homes and businesses: cockroaches, ants, spiders and more, with odourless treatments and a free inspection.",
+    shortDescription: "One visit that covers the common crawling pests in a home or office — cockroaches, ants, spiders and lizards — using targeted, low-odour treatments.",
+    quickAnswer: "General pest control treats common crawling insects found in Indian homes — including cockroaches, ants and spiders — in one visit. A technician inspects the property, applies gel baits and targeted crack-and-crevice sprays where pests hide, and advises on sealing entry points. Most homes repeat it every three months.",
     image: "/residentialpest.webp",
     imageAlt: "Technician carrying out general pest control in a kitchen and living room",
     keywords: ["pest control", "general pest control", "pest control services", "home pest control"],
     pest: "Household pests",
     facts: [
-      { label: "Covers", value: "Cockroaches, ants, spiders, silverfish" },
+      { label: "Covers", value: "Cockroaches, ants, spiders" },
       { label: "Treatment time", value: "45–90 minutes (1–3 BHK)" },
       { label: "Need to vacate?", value: "Gel: no · spray: 2–3 hours" },
       { label: "Repeat", value: "Every 3 months recommended" },
@@ -32,13 +32,12 @@ export const EXTRA_FAMILIES: ServiceContent[] = [
       "Cockroaches or ants in the kitchen, especially at night",
       "Small droppings in drawers, behind appliances or under the sink",
       "Cobwebs returning quickly in corners and behind furniture",
-      "Silverfish or small insects in bathrooms, wardrobes and books",
       "Insects coming in through drains, windows or gaps around pipes",
     ],
     sections: [
       {
         heading: "What does general pest control include?",
-        body: "A general treatment targets the pests most homes deal with at the same time:\n\n- **Cockroaches** — odourless gel bait in hinges, cracks and appliance gaps.\n- **Ants** — bait placements and targeted spray along trails and entry points.\n- **Spiders and silverfish** — residual crack-and-crevice treatment in corners, wardrobes and behind furniture.\n- **Drains and wet areas** — treatment of floor traps and pipe openings where many crawling insects enter.\n\nTermites, bed bugs, rodents and mosquitoes need their own specialised treatments; your technician will tell you if any are present.",
+        body: "A general treatment targets the pests most homes deal with at the same time:\n\n- **Cockroaches** — odourless gel bait in hinges, cracks and appliance gaps.\n- **Ants** — bait placements and targeted spray along trails and entry points.\n- **Spiders** — residual crack-and-crevice treatment in corners and behind furniture.\n- **Drains and wet areas** — treatment of floor traps and pipe openings where many crawling insects enter.\n\nTermites, bed bugs, rodents and mosquitoes need their own specialised treatments; your technician will tell you if any are present.",
       },
       {
         heading: "Gel, spray or both — what will the technician use?",
@@ -79,7 +78,7 @@ export const EXTRA_FAMILIES: ServiceContent[] = [
       "Use mesh on drains and floor traps.",
     ],
     faqs: [
-      { question: "What pests does general pest control cover?", answer: "General pest control covers common crawling pests such as cockroaches, ants, spiders and silverfish. Termites, bed bugs, rodents and mosquitoes need separate, specialised treatments." },
+      { question: "What pests does general pest control cover?", answer: "General pest control covers common crawling pests such as cockroaches, ants and spiders. Termites, bed bugs, rodents and mosquitoes need separate, specialised treatments." },
       { question: "How long does a general pest control treatment take?", answer: "About 45–90 minutes for a typical 1–3 BHK flat, depending on the size of the home and the level of activity." },
       { question: "Is general pest control safe for kids and pets?", answer: "Yes, when instructions are followed. Gel is placed in cracks out of reach, spray is limited to crevices and drains, and you are told how long to keep children and pets out of sprayed rooms." },
       { question: "How often should I do pest control at home?", answer: "Every three months suits most homes. Food businesses and buildings with heavy activity usually need monthly service." },
@@ -116,7 +115,7 @@ export const EXTRA_FAMILIES: ServiceContent[] = [
       { label: "Repeat", value: "Every 2–3 months" },
     ],
     signs: [
-      "Cockroaches, ants or silverfish in a home with small children",
+      "Cockroaches or ants in a home with small children",
       "Family members sensitive to strong chemical smells",
       "Pets that spend time on floors and skirting",
       "Light, early-stage pest activity you want to stop early",

@@ -3,7 +3,9 @@
  * Keep Name / Address / Phone identical everywhere (site, Google Business Profile,
  * directories) — consistent NAP is a core local-SEO and GEO/AEO trust signal.
  */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://pest-control-mumbai.vercel.app").replace(/\/+$/, "");
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+const isVercelUrl = configuredSiteUrl && new URL(configuredSiteUrl).hostname.endsWith(".vercel.app");
+export const SITE_URL = (isVercelUrl ? "https://ecofriendlypests.com" : configuredSiteUrl || "https://ecofriendlypests.com").replace(/\/+$/, "");
 
 export const SITE = {
   name: "Eco-Friendly Pests",
